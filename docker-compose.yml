@@ -1,0 +1,32 @@
+services:
+  redmine:
+    image: redmine:latest
+    container_name: redmine
+    depends_on:
+      - mariadb
+    environment:
+      REDMINE_DB_MYSQL: mariadb
+      REDMINE_DB_DATABASE: redmine_db
+      REDMINE_DB_USERNAME: ${REDMINE_DB_USER}
+      REDMINE_DB_PASSWORD: ${REDMINE_DB_PASSWORD}
+    ports:
+      - "3000:3000"  # Change if necessary: "host_port:container_port"
+    volumes:
+      - redmine_data:/usr/src/redmine/files
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: redmine_db
+      MYSQL_USER: ${REDMINE_DB_USER}
+      MYSQL_PASSWORD: ${REDMINE_DB_PASSWORD}
+    ports:
+      - "3306:3306"  # Change if necessary: "host_port:container_port"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+volumes:
+  redmine_data:
+  mariadb_data:
